@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+    <!--  Стиль просто взят с интернета, для красоты проекта)-->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://all-aforizmy.ru/wp-content/uploads/2022/02/bjkdvj-scaled-1.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        table {
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<form  th:action="@{/logout}" th:method="POST">
+    <input type="submit" value="LOGOUT"/>
+</form>
+<h1 style="text-align: center;">Info User</h1>
+<table th:border="3">
+    <tr>
+        <th>Name</th>
+        <th>LastName</th>
+        <th>UserName</th>
+    </tr>
+    <tr>
+        <td th:text="${user.name}">Name</td>
+        <td th:text="${user.lastName}">LastName</td>
+        <td th:text="${user.username}">UserName</td>
+    </tr>
+</table>
+</body>
+</html>

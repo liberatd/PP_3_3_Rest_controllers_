@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Users</title>
+<!--  Стиль просто взят с интернета, для красоты проекта)-->
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url('https://gas-kvas.com/grafic/uploads/posts/2023-09/1695873695_gas-kvas-com-p-kartinki-oblaka-23.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    table {
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-warning {
+      background-color: yellow;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+<form  th:action="@{/logout}" th:method="POST">
+  <input type="submit" class="button center" value="LOGOUT"/>
+</form>
+<h1 style="text-align: center;">Table User</h1>
+<table th:border="3">
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>LastName</th>
+    <th>UserName</th>
+    <th>Password</th>
+    <th>Role</th>
+    <th>Action</th>
+  </tr>
+  <tr th:each="user1 : ${user}">
+    <td th:text="${user1.id}">Id</td>
+    <td th:text="${user1.name}">Name</td>
+    <td th:text="${user1.lastName}">LastName</td>
+    <td th:text="${user1.username}">UserName</td>
+    <td th:text="${user1.password}">Password</td>
+    <td>
+    <span th:each="role1 : ${user1.roles}">
+      <span th:text="${role1.role}"></span>
+    </span>
+    </td>
+    <td>
+      <form th:method="POST" th:action="@{/users/edit?id={id}(id=${user1.id})}">
+        <input type="submit" value="DELETE"/>
+      </form>
+      <br/>
+      <a th:href="@{/users/edit?id={id}(id=${user1.id})}" class="btn btn-warning">EDIT</a>
+    </td>
+  </tr>
+</table>
+<br>
+<a href="/users/new" class="button center">Add a User</a>
+<br/>
+<br/>
+<form  th:action="@{/user}" th:method="GET">
+  <input type="submit" class="button center" value="INFO ADMIN"/>
+</form>
+</body>
+</html>
