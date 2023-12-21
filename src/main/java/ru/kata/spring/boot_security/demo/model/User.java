@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,19 +15,22 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstname")
+    private String firstName;
 
     @Column(name = "lastname")
     private String lastname;
 
-    @Column(name = "username", unique = true)
-    private String username;
+    @Column(name = "age")
+    private String age;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -38,9 +40,12 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String name, String lastname) {
-        this.name = name;
+    public User(String firstName, String lastname, String age, String email, String password) {
+        this.firstName = firstName;
         this.lastname = lastname;
+        this.age = age;
+        this.email = email;
+        this.password = password;
     }
 
     public Collection<Role> getRoles() {
@@ -51,32 +56,44 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastName() {
+    public String getLastname() {
         return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastname = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {
@@ -94,8 +111,8 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public String getUsername() {  //????????????????????????
+        return firstName;
     }
 
     @Override
@@ -122,8 +139,12 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastname + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", age='" + age + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }

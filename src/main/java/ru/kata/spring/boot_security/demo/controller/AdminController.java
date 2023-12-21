@@ -6,58 +6,53 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleServiceInterface;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceInterface;
+
+import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/admin")
 public class AdminController {
 
     private final UserServiceInterface userServiceInterface;
     private final RoleServiceInterface roleServiceInterface;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(UserServiceInterface userServiceInterface, RoleServiceInterface roleServiceInterface) {
+    public AdminController(UserServiceInterface userServiceInterface, RoleServiceInterface roleServiceInterface, UserService userService) {
         this.userServiceInterface = userServiceInterface;
         this.roleServiceInterface = roleServiceInterface;
+        this.userService = userService;
     }
 
 
     @GetMapping()
-    public String getAllUsers (Model model) {
-        model.addAttribute("user", userServiceInterface.getAllUsers());
+    public String getAllUsers (Model model, Principal principal) {
+        model.addAttribute("allUsers", userServiceInterface.getAllUsers());
+        model.addAttribute("user", userService.findByFirstName(principal.getName()));
+        model.addAttribute("allRoles", roleServiceInterface.getAllRole());
         return "admin/index";
     }
 
-    @GetMapping("/new")
-    public String newUser (Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("role", roleServiceInterface.getAllRole());
-        return "admin/new";
-    }
 
     @PostMapping()
     public String add (@ModelAttribute("user") User user) {
-        userServiceInterface.add(user);
-        return "redirect:/users";
+            userServiceInterface.add(user);
+        return "redirect:/admin";
     }
 
-    @GetMapping("/edit")
-    public String edit (@RequestParam(value = "id") long id, Model model) {
-        model.addAttribute("user", userServiceInterface.getById(id));
-        model.addAttribute("role", roleServiceInterface.getAllRole());
-        return "admin/edit";
-    }
 
     @PostMapping("/edit")
     public String update (@ModelAttribute ("user") User user, @RequestParam(value = "id") long id) {
         userServiceInterface.update(user, id);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 
     @PostMapping("/delete")
     public String delete (@RequestParam(value = "id") long id) {
         userServiceInterface.delete(id);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 }

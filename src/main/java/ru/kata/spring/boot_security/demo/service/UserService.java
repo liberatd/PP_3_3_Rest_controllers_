@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepositories;
 
@@ -18,15 +17,14 @@ public class UserService implements UserDetailsService {
         this.userRepositories = userRepositories;
     }
 
-    public User findByName (String username) {
-        return userRepositories.findByUsername(username);
+    public User findByFirstName (String firstname) {
+        return userRepositories.findByFirstName(firstname);
     }
 
 
     @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByName(username);
+    public UserDetails loadUserByUsername(String firstname) throws UsernameNotFoundException {
+        User user = userRepositories.findByFirstName(firstname);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }

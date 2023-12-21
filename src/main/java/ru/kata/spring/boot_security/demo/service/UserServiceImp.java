@@ -38,14 +38,12 @@ public class UserServiceImp implements UserServiceInterface{
         userRepositories.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public User getById(long id) {
          Optional<User> foundUser = userRepositories.findById(id);
         return foundUser.orElse(null);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         return userRepositories.findAll();
