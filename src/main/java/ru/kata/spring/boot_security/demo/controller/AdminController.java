@@ -1,58 +1,76 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleServiceInterface;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.service.UserServiceInterface;
-
+import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collection;
+import java.util.List;
 
-
-@Controller
-@RequestMapping("/admin")
+@RestController
+@RequestMapping("/api/admin")
 public class AdminController {
 
-    private final UserServiceInterface userServiceInterface;
-    private final RoleServiceInterface roleServiceInterface;
-    private final UserService userService;
+  private final UserService userService;
+  private final RoleService roleService;
 
-    @Autowired
-    public AdminController(UserServiceInterface userServiceInterface, RoleServiceInterface roleServiceInterface, UserService userService) {
-        this.userServiceInterface = userServiceInterface;
-        this.roleServiceInterface = roleServiceInterface;
-        this.userService = userService;
-    }
+  @Autowired
+  public AdminController(UserService userService, RoleService roleService) {
+    this.userService = userService;
+    this.roleService = roleService;
+  }
 
 
-    @GetMapping()
-    public String getAllUsers (Model model, Principal principal) {
-        model.addAttribute("allUsers", userServiceInterface.getAllUsers());
-        model.addAttribute("user", userService.findByFirstName(principal.getName()));
-        model.addAttribute("allRoles", roleServiceInterface.getAllRole());
-        return "admin/index";
-    }
+  @GetMapping("/info")
+  public ResponseEntity<User> infoAboutUser (Principal principal) {
+    return new ResponseEntity<>(userService.findByUsername(principal.getName()), HttpStatus.OK);
+  }
 
+  @GetMapping("/users")
+  public ResponseEntity<List<User>> getAllUsers() {
+    return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+  }
 
-    @PostMapping()
-    public String add (@ModelAttribute("user") User user) {
-            userServiceInterface.add(user);
-        return "redirect:/admin";
-    }
+  @GetMapping("/roles")
+  public ResponseEntity<Collection<Role>> getAllRoles() {
+    return new ResponseEntity<>(roleService.getAllRole(), HttpStatus.OK);
+  }
 
+  @GetMapping("/roles/{id}")
+  public ResponseEntity<Collection<Role>> getRole(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(userService.findUserById(id).getRoles(), HttpStatus.OK);
+  }
 
-    @PostMapping("/edit")
-    public String update (@ModelAttribute ("user") User user, @RequestParam(value = "id") long id) {
-        userServiceInterface.update(user, id);
-        return "redirect:/admin";
-    }
+  @GetMapping("/users/{id}")
+  public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
+  }
 
-    @PostMapping("/delete")
-    public String delete (@RequestParam(value = "id") long id) {
-        userServiceInterface.delete(id);
-        return "redirect:/admin";
-    }
+  @PostMapping("/users")
+  public ResponseEntity<User> addUser(@RequestBody @Valid User userNew) {
+    userService.add(userNew);
+    return new ResponseEntity<>(userNew, HttpStatus.OK);
+
+  }
+
+  @PatchMapping("/users/{id}")
+  public ResponseEntity<User> updateUser(@RequestBody User user) {
+    userService.update(user);
+    return new ResponseEntity<>(user, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/users/{id}")
+  public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
+    userService.findUserById(id);
+    userService.delete(id);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
 }
+
+
